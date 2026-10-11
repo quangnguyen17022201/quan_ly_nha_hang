@@ -1,0 +1,181 @@
+/* Thiết lập chung trang web */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+/* Thẻ ngắt trôi float theo giáo trình */
+.clear {
+    clear: both;
+}
+
+/* Thanh điều hướng (Navbar) */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    height: 60px;
+}
+
+.nav-container {
+    width: 92%;             /* Giãn rộng chiếm 92% màn hình */
+    max-width: 1300px;      /* Giới hạn tối đa không bị bè quá rộng trên màn hình lớn */
+    margin: 0 auto;         /* Canh giữa */
+}
+
+.nav-brand {
+    float: left;
+    line-height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-links {
+    float: right;
+    line-height: 60px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;
+    margin-left: 25px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: #f97316;
+}
+
+/* Khung chính chứa 2 cột */
+.main-container {
+    width: 92%;             /* Giãn rộng ra hai bên màn hình */
+    max-width: 1300px;      /* Giới hạn tối đa 1300px */
+    margin: 50px auto;      /* Canh giữa và tạo khoảng cách trên dưới */
+}
+
+/* Cột bên trái: Giới thiệu */
+.left-box {
+    width: 50%;             /* Tăng độ rộng để nội dung trải đều sang trái */
+    float: left;
+    padding-top: 30px;
+    box-sizing: border-box;
+}
+
+.left-box h2 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.left-box p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Cột bên phải: Form đăng nhập */
+.right-box {
+    width: 44%;             /* Cân đối khoảng trống ở giữa */
+    float: right;
+    box-sizing: border-box;
+}
+
+.login-card {
+    background-color: #ffffff;
+    padding: 35px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.login-card h2 {
+    color: #f97316;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.login-card p {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Đồng hồ thời gian */
+#realTimeClock {
+    background-color: #f9f9f9;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Thông báo lỗi */
+#errorMsg {
+    color: red;
+    background-color: #fee2e2;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Nhóm nhập liệu trong Form */
+.form-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Nút ẩn/hiện mật khẩu */
+#toggleBtn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: none;
+    border: none;
+    color: #f97316;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Nút Đăng nhập */
+#submitBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #f97316;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#submitBtn:hover {
+    background-color: #ea580c;
+}
