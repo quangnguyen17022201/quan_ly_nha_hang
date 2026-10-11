@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Chọn Món - Restaurant</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background-image: url('nen.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333; 
+        }
+        
+        header { background-color: rgba(44, 62, 80, 0.95); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;}
+        .header-left { display: flex; gap: 15px; align-items: center; }
+        .back-btn { background-color: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; }
+        .back-btn:hover { background-color: #7f8c8d; }
+        .table-badge { background-color: #e74c3c; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        
+        .cart-btn { background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .cart-btn:hover { background-color: #2ecc71; }
+
+        .container { display: flex; max-width: 1200px; margin: 20px auto; gap: 20px; padding: 0 15px; }
+
+        .sidebar { width: 30%; background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: fit-content; position: sticky; top: 80px; max-height: 85vh; overflow-y: auto;}
+        .sidebar h3 { margin-bottom: 15px; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; }
+        .sidebar ul.nav-menu { list-style: none; margin-bottom: 30px; }
+        .sidebar ul.nav-menu li { margin-bottom: 10px; }
+        .sidebar ul.nav-menu li a { text-decoration: none; color: #2c3e50; font-weight: bold; display: block; padding: 8px; border-radius: 5px; transition: 0.2s; }
+        .sidebar ul.nav-menu li a:hover { background-color: #ecf0f1; color: #e74c3c; }
+
+        /* Vùng Danh sách món đã chọn */
+        .selected-list { list-style: none; padding: 0; }
+        .selected-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #ccc; font-size: 14px; }
+        .remove-btn { background: #e74c3c; color: white; border: none; border-radius: 3px; padding: 2px 6px; cursor: pointer; font-weight: bold;}
+
+        .menu-content { width: 70%; }
+        .category-section { margin-bottom: 40px; background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .category-title { font-size: 24px; color: #2c3e50; margin-bottom: 20px; border-left: 5px solid #e74c3c; padding-left: 10px; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .menu-item { border: 1px solid #eee; background: white; border-radius: 8px; overflow: hidden; transition: transform 0.2s; display: flex; flex-direction: column; }
+        .menu-item:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        
+        .item-img { width: 100%; height: 160px; background-color: #ddd; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .item-img img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .item-details { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .item-name-vi { font-size: 16px; font-weight: bold; color: #e74c3c; margin-bottom: 5px; }
+        .item-name-en { font-size: 12px; color: #7f8c8d; margin-bottom: 10px; font-style: italic; }
+        .item-price { font-size: 16px; font-weight: bold; color: #2c3e50; margin-top: auto; margin-bottom: 15px; }
+        .add-btn { background-color: #3498db; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .add-btn:hover { background-color: #2980b9; }
+
+        /* Popup Thông báo đẹp giữa màn hình */
+        #custom-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: rgba(46, 204, 113, 0.95); color: white; padding: 20px 40px;
+            border-radius: 10px; font-size: 22px; font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999; display: none; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-popup">Đã thêm món thành công!</div>
+
+    <header>
+        <div class="header-left">
+            <a href="tables.html" class="back-btn">🔙 Thoát ra</a>
+            <h2>🍴 Menu</h2>
+            <div class="table-badge" id="table-display">Bàn: Chưa chọn</div>
+        </div>
+        <button class="cart-btn" onclick="goToPayment()">🛒 Thanh toán (<span id="cart-count">0</span>) - <span id="cart-total">0</span>đ</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3>Danh Mục Món</h3>
+            <ul class="nav-menu">
+                <li><a href="#mon-chinh">🥩 Món chính</a></li>
+                <li><a href="#sup">🥣 Súp</a></li>
+                <li><a href="#spaghetti">🍝 Spaghetti</a></li>
+                <li><a href="#an-kem">🥗 Món ăn kèm</a></li>
+                <li><a href="#banh-man">🍔 Bánh mặn</a></li>
+                <li><a href="#trang-mieng">🍰 Tráng miệng</a></li>
+                <li><a href="#co-con">🍺 Đồ uống (Có cồn)</a></li>
+                <li><a href="#khong-con">🥤 Đồ uống (Không cồn)</a></li>
+            </ul>
+
+            <h3 style="margin-top: 20px; color: #27ae60; border-bottom-color: #27ae60;">Món đã chọn</h3>
+            <ul class="selected-list" id="mini-cart-list">
+                <!-- Javascript sẽ đổ món vào đây -->
+            </ul>
+        </aside>
+
+        <main class="menu-content">
+            <!-- MÓN CHÍNH -->
+            <section id="mon-chinh" class="category-section">
+                <h2 class="category-title">Món Chính (Main Courses)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="steak.jpg" alt="Beefsteak"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Beefsteak (Sốt tiêu / Rượu vang)</div>
+                            <div class="item-name-en">Beefsteak with Pepper / Red Wine Sauce</div>
+                            <div class="item-price">350.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Beefsteak', 350000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="ca.webp" alt="Salmon"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Cá hồi áp chảo sốt chanh leo</div>
+                            <div class="item-name-en">Pan-seared Salmon with Passion Fruit</div>
+                            <div class="item-price">280.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Cá hồi áp chảo', 280000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="ga.jpg" alt="Đùi gà cuộn nấm"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Đùi gà cuộn nấm</div>
+                            <div class="item-name-en">Mushroom-Stuffed Chicken Thigh</div>
+                            <div class="item-price">210.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Đùi gà cuộn nấm', 210000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="suon.jpeg" alt="Sườn nướng BBQ"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Sườn nướng BBQ</div>
+                            <div class="item-name-en">BBQ Grilled Ribs</div>
+                            <div class="item-price">320.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Sườn nướng BBQ', 320000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="tom.jpg" alt="Tôm nướng húng tây"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Tôm nướng húng tây</div>
+                            <div class="item-name-en">Thyme Grilled Shrimp</div>
+                            <div class="item-price">250.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Tôm nướng húng tây', 250000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SÚP -->
+            <section id="sup" class="category-section">
+                <h2 class="category-title">Súp (Soups)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="supbi.jpg" alt="Súp bí đỏ"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Súp bí đỏ</div>
+                            <div class="item-name-en">Creamy Pumpkin Soup</div>
+                            <div class="item-price">90.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Súp bí đỏ', 90000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="supga.jpg" alt="Súp gà"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Súp gà</div>
+                            <div class="item-name-en">Chicken Soup</div>
+                            <div class="item-price">90.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Súp gà', 90000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="suphai.webp" alt="Súp hải sản"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Súp hải sản</div>
+                            <div class="item-name-en">Seafood Soup</div>
+                            <div class="item-price">120.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Súp hải sản', 120000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SPAGHETTI -->
+            <section id="spaghetti" class="category-section">
+                <h2 class="category-title">Spaghetti (Pasta)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="mibo.webp" alt="Mì bò bằm"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Mì bò bằm</div>
+                            <div class="item-name-en">Spaghetti Bolognese</div>
+                            <div class="item-price">160.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Mì bò bằm', 160000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="minam.jpg" alt="Mì kem nấm"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Mì kem nấm</div>
+                            <div class="item-name-en">Mushroom Cream Pasta</div>
+                            <div class="item-price">160.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Mì kem nấm', 160000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="miong.webp" alt="Mì ống phô mai"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Mì ống phô mai</div>
+                            <div class="item-name-en">Macaroni and Cheese</div>
+                            <div class="item-price">140.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Mì ống phô mai', 140000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MÓN ĂN KÈM -->
+            <section id="an-kem" class="category-section">
+                <h2 class="category-title">Món Ăn Kèm (Side Dishes)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="khoai.jpg" alt="Khoai tây chiên"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Khoai tây chiên</div>
+                            <div class="item-name-en">Crispy French Fries</div>
+                            <div class="item-price">70.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Khoai tây chiên', 70000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="khoailo.webp" alt="Khoai bỏ lò"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Khoai bỏ lò</div>
+                            <div class="item-name-en">Baked Potatoes</div>
+                            <div class="item-price">80.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Khoai bỏ lò', 80000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="salad.jpg" alt="Salad rau củ"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Salad rau củ sốt dấm</div>
+                            <div class="item-name-en">Vegetable Salad with Vinaigrette</div>
+                            <div class="item-price">90.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Salad rau củ', 90000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="saladqua.jpg" alt="Salad hoa quả"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Salad hoa quả sốt chanh leo</div>
+                            <div class="item-name-en">Fruit Salad with Passion Fruit Sauce</div>
+                            <div class="item-price">100.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Salad hoa quả', 100000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BÁNH MẶN -->
+            <section id="banh-man" class="category-section">
+                <h2 class="category-title">Bánh Mặn (Savory Pastries)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="buger.jpg" alt="Burger"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Burger Bò</div>
+                            <div class="item-name-en">Classic Beef Burger</div>
+                            <div class="item-price">140.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Burger Bò', 140000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="sandwich.jpg" alt="Sandwich"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Sandwich Thịt Nguội</div>
+                            <div class="item-name-en">Club Sandwich</div>
+                            <div class="item-price">120.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Sandwich', 120000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="tacos.jpg" alt="Tacos"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Tacos Gà / Bò</div>
+                            <div class="item-name-en">Mexican Tacos</div>
+                            <div class="item-price">130.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Tacos', 130000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRÁNG MIỆNG -->
+            <section id="trang-mieng" class="category-section">
+                <h2 class="category-title">Tráng Miệng (Desserts)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="tira.avif" alt="Tiramisu"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Bánh Tiramisu Ý</div>
+                            <div class="item-name-en">Classic Tiramisu</div>
+                            <div class="item-price">95.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Tiramisu', 95000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="che.jpg" alt="Cheesecake"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Bánh Phô Mai Nướng</div>
+                            <div class="item-name-en">Baked Cheesecake</div>
+                            <div class="item-price">105.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Cheesecake', 105000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="kem.jpg" alt="Kem Vanilla"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Kem Vanilla Trái Cây</div>
+                            <div class="item-name-en">Vanilla Ice Cream with Fruits</div>
+                            <div class="item-price">80.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Kem Vanilla', 80000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ĐỒ UỐNG CÓ CỒN -->
+            <section id="co-con" class="category-section">
+                <h2 class="category-title">Đồ Uống Có Cồn (Alcoholic Beverages)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="bia.png" alt="Bia Tươi"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Bia Tươi Tháp/Ly</div>
+                            <div class="item-name-en">Draft Beer</div>
+                            <div class="item-price">60.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Bia Tươi', 60000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="margarita.jpeg" alt="Margarita"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Margarita Cocktail</div>
+                            <div class="item-name-en">Margarita Cocktail</div>
+                            <div class="item-price">150.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Margarita', 150000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="mojito.jpg" alt="Mojito"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Mojito Chanh Bạc Hà</div>
+                            <div class="item-name-en">Classic Mojito Cocktail</div>
+                            <div class="item-price">140.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Mojito', 140000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="pina-colada.jpeg" alt="Pina Colada"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Piña Colada Cocktail</div>
+                            <div class="item-name-en">Piña Colada Cocktail</div>
+                            <div class="item-price">160.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Pina Colada', 160000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="old-fashioned.webp" alt="Old Fashioned"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Old Fashioned Cocktail</div>
+                            <div class="item-name-en">Old Fashioned Cocktail</div>
+                            <div class="item-price">180.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Old Fashioned', 180000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ĐỒ UỐNG KHÔNG CỒN -->
+            <section id="khong-con" class="category-section">
+                <h2 class="category-title">Đồ Uống Không Cồn (Non-Alcoholic)</h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-img"><img src="h2o.jpg" alt="Nước suối"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Nước Suối Tinh Khiết</div>
+                            <div class="item-name-en">Mineral Water</div>
+                            <div class="item-price">20.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Nước Suối', 20000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="cam.jpg" alt="Nước ép cam"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Nước Ép Cam Tươi</div>
+                            <div class="item-name-en">Fresh Orange Juice</div>
+                            <div class="item-price">65.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Nước Cam', 65000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="hau.jpg" alt="Nước ép dưa hấu"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Nước Ép Dưa Hấu</div>
+                            <div class="item-name-en">Watermelon Juice</div>
+                            <div class="item-price">60.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Nước Dưa Hấu', 60000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="dao.jpg" alt="Trà đào"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Trà Đào Cam Sả</div>
+                            <div class="item-name-en">Peach Orange Lemongrass Tea</div>
+                            <div class="item-price">55.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Trà Đào Cam Sả', 55000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-img"><img src="phe.jpg" alt="Cà phê"></div>
+                        <div class="item-details">
+                            <div class="item-name-vi">Cà Phê Đen/Sữa Đá</div>
+                            <div class="item-name-en">Vietnamese Iced Coffee</div>
+                            <div class="item-price">45.000đ</div>
+                            <button class="add-btn" onclick="addToCart('Cà Phê', 45000)">Thêm vào món</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let currentTable = localStorage.getItem('selectedTable') || 'Chưa chọn bàn';
+        document.getElementById('table-display').innerText = currentTable;
+
+        let restaurantData = JSON.parse(localStorage.getItem('restaurantData')) || {};
+        if (!restaurantData[currentTable]) {
+            restaurantData[currentTable] = [];
+        }
+
+        function formatMoney(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function updateCartUI() {
+            let tableCart = restaurantData[currentTable];
+            let total = tableCart.reduce((sum, item) => sum + item.price, 0);
+            
+            document.getElementById('cart-count').innerText = tableCart.length;
+            document.getElementById('cart-total').innerText = formatMoney(total);
+
+            let listHTML = '';
+            tableCart.forEach((item, index) => {
+                listHTML += `
+                    <li>
+                        <span>${item.name}</span>
+                        <div>
+                            <span style="color:#e74c3c; font-weight:bold; margin-right:10px;">${formatMoney(item.price)}đ</span>
+                            <button class="remove-btn" onclick="removeItem(${index})">X</button>
+                        </div>
+                    </li>`;
+            });
+            if(tableCart.length === 0) listHTML = '<li style="color:#7f8c8d;">Chưa có món nào</li>';
+            document.getElementById('mini-cart-list').innerHTML = listHTML;
+        }
+
+        function addToCart(name, price) {
+            restaurantData[currentTable].push({ name: name, price: price });
+            localStorage.setItem('restaurantData', JSON.stringify(restaurantData));
+            updateCartUI();
+            
+            let popup = document.getElementById('custom-popup');
+            popup.innerHTML = `Đã thêm món <br> <span style="color:#f1c40f;">${name}</span>`;
+            popup.style.display = 'block';
+            setTimeout(() => { popup.style.display = 'none'; }, 1500); 
+        }
+
+        function removeItem(index) {
+            restaurantData[currentTable].splice(index, 1);
+            localStorage.setItem('restaurantData', JSON.stringify(restaurantData));
+            updateCartUI();
+        }
+
+        function goToPayment() {
+            if(restaurantData[currentTable].length === 0) {
+                alert("Bạn chưa gọi món nào cho bàn này!");
+            } else {
+                window.location.href = "payment.html"; 
+            }
+        }
+
+        window.onload = updateCartUI;
+    </script>
+</body>
+</html>
