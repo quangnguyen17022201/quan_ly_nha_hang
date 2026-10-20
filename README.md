@@ -11,8 +11,13 @@ Bài tập lớn môn Thiết kế Web.
 | **Hàn Tuấn Đạt** | 252601032 | Trang đăng nhập, đồng hồ thời gian thực, hỗ trợ kết nối hệ thống |
 
 ---
+### LIÊN KẾT TRANG
+KHO CHỨ CODE:**https://github.com/quangnguyen17022201/quan_ly_nha_hang
 
-### III. DANH SÁCH TRANG VÀ CHỨC NĂNG
+WEBSITE TRỰC TIẾP:**https://quangnguyen17022201.github.io/quan_ly_nha_hang/
+---
+
+###  DANH SÁCH TRANG VÀ CHỨC NĂNG
 
 | Trang | File HTML | Chức năng chính |
 | :--- | :--- | :--- |
@@ -22,7 +27,7 @@ Bài tập lớn môn Thiết kế Web.
 | **Thanh toán** | `thanh-toan.html` | Xem chi tiết hóa đơn theo bàn, tính tổng tiền, thực hiện thanh toán, in hóa đơn và giải phóng trạng thái bàn. |
 
 ---
-### IV. CẤU TRÚC THƯ MỤC DỰ ÁN
+###  CẤU TRÚC THƯ MỤC DỰ ÁN
 
 ```text
 quan_ly_nha_hang/
@@ -43,8 +48,18 @@ quan_ly_nha_hang/
 └── image/                  # Logo nhà hàng, ảnh món ăn, ảnh nền
 ```
 ---
+##  Tài Khoản nhân viên đăng nhập
 
-### V. CẤU TRÚC DỮ LIỆU (LOCALSTORAGE)
+Để kiểm thử các chức năng Thầy-Cô và các bạn có thể đăng nhập tại trang `index.html` với thông tin sau:
+
+- **Tài khoản Quản trị (Admin):**
+  - **Tên đăng nhập:** `ADMIN`
+  - **Mật khẩu:** `123456`
+---
+### CÁCH DÙNG 
+ Mở trình duyệt và truy cập: https://github.com/quangnguyen17022201/quan_ly_nha_hang
+---
+### CẤU TRÚC DỮ LIỆU (LOCALSTORAGE)
 
 Do dự án triển khai dưới dạng ứng dụng Front-End thuần, dữ liệu được lưu trữ trực tiếp trên **LocalStorage** của trình duyệt theo các khóa sau:
 
@@ -55,5 +70,5 @@ Do dự án triển khai dưới dạng ứng dụng Front-End thuần, dữ li�
 3. **`thongTinThanhToan`**: Lưu thông tin bàn ăn đang chuyển sang trang thanh toán để tạo hóa đơn.
 
 ---
-### VI. TỔNG KẾT VÀ HƯỚNG PHÁT TRIỂN
+###  TỔNG KẾT VÀ HƯỚNG PHÁT TRIỂN
 * **Kết quả đạt được:** Hệ thống hoàn thiện đầy đủ các chức năng quản lý từ khâu Đăng nhập $\rightarrow$ Đặt bàn $\rightarrow$ Gọi món $\rightarrow$ Thanh toán. Giao diện đồng bộ, hiển thị mượt mà trên trình duyệt.
