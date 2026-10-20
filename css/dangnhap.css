@@ -162,7 +162,8 @@ body {
     cursor: pointer;
     font-size: 13px;
 }
-#toggleBtn:hover { color: #b5952f; }
+#toggleBtn:hover 
+    { color: #b5952f; }
 #submitBtn {
     width: 100%;
     padding: 14px;
@@ -176,27 +177,5 @@ body {
     transition: 0.3s;
     margin-top: 10px;
 }
-#submitBtn:hover { background-color: #b5952f; }
-.nhom-nut-tren {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.nut-quan-ly-ban {
-  padding: 10px 20px;
-  background-color: #2c2c2c;
-  color: #d4af37;
-  border: 1px solid #d4af37;
-  font-size: 15px;
-  font-weight: bold;
-  text-decoration: none;
-  white-space: nowrap;
-  border-radius: 6px;
-  transition: 0.3s;
-}
-
-.nut-quan-ly-ban:hover {
-  background-color: #d4af37;
-  color: #1a1a1a;
-}
+#submitBtn:hover 
+    { background-color: #b5952f; }

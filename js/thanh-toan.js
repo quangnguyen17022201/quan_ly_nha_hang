@@ -23,7 +23,7 @@ function taoSơDoBan() {
     nut.type = "button";
     nut.innerText = i;
     
-    // Gán class CSS chung
+
     nut.className = "nut-ban";
 
     const daLuu = localStorage.getItem("order-ban-" + i);
