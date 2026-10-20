@@ -3,22 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Đặt bàn trước - Gourmet Restaurant</title>
-<link rel="stylesheet" href="datban.css">
+<title>Đặt bàn trước - SPATULA & STAR</title>
+<link rel="stylesheet" href="../css/dangnhap.css">
+<link rel="stylesheet" href="../css/datban.css">
 </head>
 <body>
-<header>🍴 Gourmet Restaurant <span class="badge">Đặt bàn trước</span></header>
-
+<header>
+    <div class="thuong-hieu">
+        <img src="../image/logo.jpg" alt="Logo" class="logo-img">
+        <span>SPATULA & STAR</span>
+        <span class="badge">Đặt bàn trước</span>
+    </div>
+    <a href="goi-mon.html" class="nut-menu">Vào Menu Gọi Món ➔</a>
+</header>
 <div class="layout">
   <section class="card">
     <h2>Thông tin đặt bàn</h2>
     <form id="form" novalidate>
       <label>Tên khách
-        <input id="name" type="text" placeholder="Nguyễn Văn A" autocomplete="name">
+        <input id="name" type="text" autocomplete="name">
         <small class="err" id="e-name"></small>
       </label>
       <label>Số điện thoại
-        <input id="phone" type="tel" placeholder="0901234567" autocomplete="tel">
+        <input id="phone" type="tel" autocomplete="tel">
         <small class="err" id="e-phone"></small>
       </label>
       <div class="two">
@@ -44,14 +51,12 @@
       <button class="btn" type="submit">Đặt bàn</button>
     </form>
   </section>
-
   <section class="card">
     <h2>Danh sách bàn đã đặt <span class="count" id="count">0</span></h2>
     <div id="list"></div>
   </section>
 </div>
-
 <div class="toast" id="toast"></div>
-<script src="datban.js"></script>
+ <script src="../js/datban.js"></script>
 </body>
 </html>
